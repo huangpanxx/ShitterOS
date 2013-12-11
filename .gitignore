@@ -20,4 +20,4 @@
 # Misc
 *.img
 *.bin
-*.DS_Store
+.DS_Store
