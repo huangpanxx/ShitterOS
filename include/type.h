@@ -1,11 +1,13 @@
-#ifndef BYTE
+#ifndef TYPE_H
+#define TYPE_H
+
 #define BYTE unsigned char
-#endif
-
-#ifndef WORD
 #define WORD unsigned short
-#endif
-
-#ifndef DWORD
 #define DWORD unsigned int
+
+typedef BYTE u8;
+typedef WORD u16;
+typedef DWORD u32;
+
+
 #endif

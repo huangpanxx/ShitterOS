@@ -1,7 +1,7 @@
 ASM := nasm -f elf32
 CC := cc -I ../include/ -L ../lib/
-COBJS := kernel.o i8259.o memory.o
-AOBJS := kernela.o porta.o
+COBJS := kernel.o interrupt.o memory.o print.o global.o
+AOBJS := kernela.o porta.o interrupta.o
 
 all: makefile kernel.bin 
 
