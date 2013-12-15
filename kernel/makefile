@@ -1,4 +1,7 @@
 ASM := nasm -f elf32
+CC := cc -I ../include/ -L ../lib/
+COBJS := kernel.o i8259.o memory.o
+AOBJS := kernela.o porta.o
 
 all: makefile kernel.bin 
 
@@ -8,11 +11,12 @@ clean: makefile
 
 .PHONY: all clean
 
-main.o: makefile main.c
-	cc -m32 -c main.c -o main.o
-kernel.o: makefile kernel.asm	
-	$(ASM) kernel.asm -o kernel.o
+$(COBJS): %.o: %.c makefile
+	$(CC) -m32 -c $< -o $@
 
-kernel.bin: makefile main.o kernel.o
-	ld -Ttext 0x30400 -m elf_i386 -s -o kernel.bin kernel.o  main.o
+$(AOBJS): %.o: %.asm makefile
+	$(ASM) $< -o $@
+
+kernel.bin: makefile $(COBJS) $(AOBJS)
+	ld -Ttext 0x30400 -m elf_i386 -s -o kernel.bin $(AOBJS) $(COBJS)
 

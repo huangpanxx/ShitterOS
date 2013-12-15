@@ -1,4 +1,4 @@
-void memcpy(void * des, const void * src, int size)
+/*void memcpy(void * des, const void * src, int size)
 {
 	while (size --)
 	{
@@ -7,3 +7,4 @@ void memcpy(void * des, const void * src, int size)
 		src++;
 	}
 }
+*/

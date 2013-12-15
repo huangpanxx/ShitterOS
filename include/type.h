@@ -1,11 +1,11 @@
 #ifndef BYTE
-#define BYTE unsinged char
+#define BYTE unsigned char
 #endif
 
 #ifndef WORD
-#define WORD unsinged short
+#define WORD unsigned short
 #endif
 
 #ifndef DWORD
-#define DWORD unsinged int
+#define DWORD unsigned int
 #endif

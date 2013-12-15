@@ -1,7 +1,10 @@
+#include "port.h"
+
 void put_chr(int x,int y,int chr);
 void put_str(const char* str);
 
 int main() {
+	init_8259A();
 	put_str("Fuck YOU");
 	return 0;
 }
@@ -13,3 +16,4 @@ void put_str(const char* str) {
 		put_chr(x,0,s);
 	}
 }
+
