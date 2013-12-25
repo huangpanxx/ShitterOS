@@ -20,7 +20,6 @@ _start:	; 跳到这里来的时候，我们假设 gs 指向显存
 	mov eax,gs
 	mov [edi],eax
 	call main
-.1
 	hlt
 	jmp $
 

@@ -1,4 +1,5 @@
 extern exception_handler
+extern spurious_irq
 
 
 global divide_error
@@ -18,10 +19,21 @@ global general_protection
 global page_fault
 global copr_error
 
+global hwint00
+
 
 global set_sti
 global load_idt
 
+
+load_idt:
+	mov		eax,[esp+4]
+	lidt	[eax]
+	ret
+
+set_sti:
+	sti
+	ret
 
 divide_error:
 	push	0xFFFFFFFF
@@ -83,13 +95,13 @@ copr_error:
 	jmp 	exception
 exception:
 	call	exception_handler
-	add 	esp, 4*2
+	add 	esp, 4 * 2
 	hlt
 
-load_idt:
-	lidt	[esp + 4]
-	ret
+hwint00:
+	push 0
+	call spurious_irq
+	add esp,4
+	hlt
 
-set_sti:
-	sti
-	ret
+

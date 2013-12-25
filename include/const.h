@@ -28,4 +28,7 @@
 #define DA_386IGate     0x8E    /* 中断门*/
 #define DA_386TGate     0x8F    /* 陷阱门*/
 
+
+#define IDTSIZE 255
+
 #endif

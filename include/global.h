@@ -9,18 +9,20 @@
 
 
 #include "type.h"
+#include "const.h"
 
 typedef struct struct_gate 
 {
 	u16 offset_low;
 	u16 selector;
   	u8	dcount;
-	u8 attr;
+	u8  attr;
 	u16 offset_high;
 } gate;
 
-EXTERN g_idt[16];
-
+EXTERN gate g_idt[IDTSIZE];
+EXTERN u8   g_idt_ptr[6];
 
 #undef __GLOBAL__
 #endif
+

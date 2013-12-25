@@ -5,7 +5,6 @@
 
 typedef void (*int_handler) ();
 
-  
 void divide_error();
 void single_step_exception();
 void nmi();
@@ -23,9 +22,11 @@ void general_protection();
 void page_fault();
 void copr_error();
 
+void hwint00();
+
 
 void set_sti();
-void load_idt(gate* idt_ptr);
+void* load_idt(void* idt_ptr);
 
 /*
  *以下代码初始化8259A中断控制器
@@ -75,7 +76,7 @@ void enable_interrupt()
 void init_idt_desc(u8 vector,u8 desc_type,
 		int_handler handler, u8 priviledge)
 {
-	gate *p_gate = &g_idt[vector];
+	gate *p_gate = &(g_idt[vector]);
 	u32 base 	 = (u32)handler;
 	p_gate->offset_low 	= base & 0xFFFF;
 	p_gate->selector	= SELECTOR_KERNEL_R;
@@ -93,8 +94,12 @@ void exception_handler(int vec_no,int err_code,int eip,int cs,int eflags)
 	put_str(0,0,12,"exception_handler called");
 }
 
-/* 构建idt */
-void setup_idt()
+void spurious_irq(int code)
+{
+	put_str(0,0,12,"spurious_irq called");
+}
+
+void init_idt() 
 {
 	int i;
 	const static int_handler handlers[16] = {
@@ -116,27 +121,37 @@ void setup_idt()
 		copr_error
 	};
 
+	for(i = 0; i <= 14; ++i) {
+		init_idt_desc(i, DA_386IGate,
+			handlers[i], PRIVILEGE_KRNL);
+	}
+
+	init_idt_desc(16, DA_386IGate,
+		handlers[15], PRIVILEGE_KRNL);
+
+	for(i = 0x20; i < IDTSIZE; ++i) {
+		init_idt_desc(i, DA_386IGate,
+		hwint00, PRIVILEGE_KRNL);
+	}
+
+	u16* p_idt_limit = (u16*)(&g_idt_ptr[0]);
+	u32* p_idt_base  = (u32*)(&g_idt_ptr[2]);
+	
+	*p_idt_limit = IDTSIZE * sizeof(gate) - 1;
+	*p_idt_base  = (u32)&g_idt;
+
+	int ptr = (int)load_idt(g_idt_ptr);
+	put_int(0,0,2,ptr);
+	put_int(0,1,2,(int)&g_idt_ptr);
+
+}
+
+
+/* 构建idt */
+void setup_idt()
+{
 	init_8259A();
-
-	for(i = 0; i<= 7; ++i) {
-		init_idt_desc(INT_VECTOR_IRQ0 + i,
-			DA_386IGate,
-			handlers[i],	
-			PRIVILEGE_KRNL);
-	}
-
-	for(i = 8; i <= 14; ++i) {
-		init_idt_desc(INT_VECTOR_IRQ8 + i - 8,
-			DA_386IGate,
-			handlers[i],
-			PRIVILEGE_KRNL);
-	}
-	init_idt_desc(INT_VECTOR_IRQ8 + 15 - 8,
-		DA_386IGate,
-		handlers[15],
-		PRIVILEGE_KRNL);
-
-	load_idt(g_idt);
+	init_idt();
 	enable_interrupt();
 }
 
