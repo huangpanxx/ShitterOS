@@ -3,6 +3,7 @@
 #include "global.h"
 #include "print.h"
 
+
 typedef void (*int_handler) ();
 
 void divide_error();
@@ -24,9 +25,8 @@ void copr_error();
 
 void hwint00();
 
-
 void set_sti();
-void* load_idt(void* idt_ptr);
+void load_idt(void* idt_ptr);
 
 /*
  *以下代码初始化8259A中断控制器
@@ -79,6 +79,7 @@ void init_idt_desc(u8 vector,u8 desc_type,
 	gate *p_gate = &(g_idt[vector]);
 	u32 base 	 = (u32)handler;
 	p_gate->offset_low 	= base & 0xFFFF;
+	put_int(33,3,4,SELECTOR_KERNEL_R);
 	p_gate->selector	= SELECTOR_KERNEL_R;
 	p_gate->dcount		= 0;
 	p_gate->attr		= desc_type | (priviledge << 5);
@@ -140,10 +141,7 @@ void init_idt()
 	*p_idt_limit = IDTSIZE * sizeof(gate) - 1;
 	*p_idt_base  = (u32)&g_idt;
 
-	int ptr = (int)load_idt(g_idt_ptr);
-	put_int(0,0,2,ptr);
-	put_int(0,1,2,(int)&g_idt_ptr);
-
+	load_idt(g_idt_ptr);
 }
 
 

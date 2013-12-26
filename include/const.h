@@ -14,9 +14,9 @@
 #define	INT_VECTOR_IRQ8			0x28
 
 /* GDT选择子 */
-#define SELECTOR_KERNEL_R  	0
-#define SELECTOR_KERNEL_RW 	4
-#define SELECTOR_VIDEO 		8
+#define SELECTOR_KERNEL_R  	0x08
+#define SELECTOR_KERNEL_RW 	0x10
+#define SELECTOR_VIDEO 		(0x18+3)
 
 /*  权限 */
 #define	PRIVILEGE_KRNL	0
@@ -29,6 +29,6 @@
 #define DA_386TGate     0x8F    /* 陷阱门*/
 
 
-#define IDTSIZE 255
+#define IDTSIZE 256
 
 #endif
